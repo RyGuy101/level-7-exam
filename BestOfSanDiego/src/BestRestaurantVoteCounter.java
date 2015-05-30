@@ -4,14 +4,43 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class BestRestaurantVoteCounter {
+
+	int votesForSangDeuan = 0, votesForOceanaCoastalKitchen = 0,
+			votesForWerewolf = 0, votesForHomeAndAway = 0, votesForCLevel = 0;
+
+	public int getVotesForSangDeuan() {
+		return votesForSangDeuan;
+	}
+
+	public int getVotesForOceanaCoastalKitchen() {
+		return votesForOceanaCoastalKitchen;
+	}
+
+	public int getVotesForWerewolf() {
+		return votesForWerewolf;
+	}
+
+	public int getVotesForHomeAndAway() {
+		return votesForHomeAndAway;
+	}
+
+	public int getVotesForCLevel() {
+		return votesForCLevel;
+	}
+
+	ArrayList<String> votes = new ArrayList<String>();
+
+	public ArrayList<String> getVotes() {
+		return votes;
+	}
+
 	public static void main(String[] args) throws IOException {
 		new BestRestaurantVoteCounter().getGoing();
 	}
 
-	private void getGoing() throws IOException {
+	void getGoing() throws IOException {
 		URL fileWithVotes = getClass().getResource("sample-votes.txt");
 
-		ArrayList<String> votes = new ArrayList();
 		Scanner scanner = new Scanner(fileWithVotes.openStream());
 
 		while (scanner.hasNextLine()) {
@@ -19,7 +48,6 @@ public class BestRestaurantVoteCounter {
 		}
 		scanner.close();
 
-		int votesForSangDeuan = 0, votesForOceanaCoastalKitchen = 0, votesForWerewolf = 0, votesForHomeAndAway = 0, votesForCLevel = 0;
 		for (String vote : votes) {
 			if (matchesSangDeuan(vote))
 				votesForSangDeuan++;
@@ -33,12 +61,17 @@ public class BestRestaurantVoteCounter {
 				votesForCLevel++;
 		}
 
-		String winningRestaurant = calculateWinner(votesForSangDeuan, votesForOceanaCoastalKitchen, votesForWerewolf, votesForHomeAndAway, votesForCLevel);
-		System.out.println("Reader's favorite restaurant is: "  + winningRestaurant);
-		//TODO: Tweet the result.
+		String winningRestaurant = calculateWinner(votesForSangDeuan,
+				votesForOceanaCoastalKitchen, votesForWerewolf,
+				votesForHomeAndAway, votesForCLevel);
+		System.out.println("Reader's favorite restaurant is: "
+				+ winningRestaurant);
+		// TODO: Tweet the result.
 	}
 
-	private String calculateWinner(int votesForSangDeuan, int votesForOceanaCoastalKitchen, int votesForWerewolf, int votesForHomeAndAway, int votesForCLevel) {
+	String calculateWinner(int votesForSangDeuan,
+			int votesForOceanaCoastalKitchen, int votesForWerewolf,
+			int votesForHomeAndAway, int votesForCLevel) {
 		int mostVotes = 0;
 		String winningRestaurant = null;
 		if (votesForSangDeuan > mostVotes) {
@@ -65,35 +98,42 @@ public class BestRestaurantVoteCounter {
 	}
 
 	boolean matchesSangDeuan(String possibleMatch) {
-		if (possibleMatch.equalsIgnoreCase("Sang Deuan") || possibleMatch.equalsIgnoreCase("Sang Duan"))
+		if (possibleMatch.toLowerCase().contains("sang deuan")
+				|| possibleMatch.toLowerCase().contains("sang duan"))
 			return true;
 		else
 			return false;
 	}
 
 	boolean matchesOceanaCoastalKitchen(String possibleMatch) {
-		if (possibleMatch.equalsIgnoreCase("Oceana Coastal Kitchen") || possibleMatch.equalsIgnoreCase("Ocean Coastal"))
+		if (possibleMatch.toLowerCase().contains("oceana coastal kitchen")
+				|| possibleMatch.toLowerCase().contains("ocean coastal"))
 			return true;
 		else
 			return false;
 	}
 
 	boolean matchesWerewolf(String possibleMatch) {
-		if (possibleMatch.equalsIgnoreCase("Wherewolf") || possibleMatch.equalsIgnoreCase("Werewolf"))
+		if (possibleMatch.toLowerCase().contains("wherewolf")
+				|| possibleMatch.toLowerCase().contains("werewolf"))
 			return true;
 		else
 			return false;
 	}
 
 	boolean matchesHomeAndAway(String possibleMatch) {
-		if (possibleMatch.equalsIgnoreCase("HomeAndAway") || possibleMatch.equalsIgnoreCase("Home And Away") || possibleMatch.equalsIgnoreCase("Home & Away"))
+		if (possibleMatch.toLowerCase().contains("homeandaway")
+				|| possibleMatch.toLowerCase().contains("home and away")
+				|| possibleMatch.toLowerCase().contains("home & away"))
 			return true;
 		else
 			return false;
 	}
 
 	boolean matchesCLevel(String possibleMatch) {
-		if (possibleMatch.equalsIgnoreCase("C Level") || possibleMatch.equalsIgnoreCase("c-level") || possibleMatch.equalsIgnoreCase("c level lounge"))
+		if (possibleMatch.toLowerCase().contains("c level")
+				|| possibleMatch.toLowerCase().contains("c-level")
+				|| possibleMatch.toLowerCase().contains("c level lounge"))
 			return true;
 		else
 			return false;

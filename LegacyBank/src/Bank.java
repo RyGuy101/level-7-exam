@@ -4,61 +4,82 @@ import java.util.List;
 import java.util.Locale;
 
 public class Bank {
-    
-    void updateBalances(List accounts){
-   	 for (Object object : accounts) {
-   		 double xtra = calculateInterest((BankAccount) object);
-   		 BankAccount acc = (BankAccount) object;
-   		 acc.money = acc.money + xtra;
-   	 }
-   	 
-    }
-    
-    double calculateInterest(BankAccount account) {
 
-   	 Date dateOpened = account.date;
-   	 double amount = account.getBalance();
-   	 
-   	 double perc = 2.54/100;
-   	 
-   	 
-   	 Calendar a = Calendar.getInstance(Locale.US);
-    	a.setTime(new Date());
-    	Calendar b = Calendar.getInstance(Locale.US);
-    	b.setTime(dateOpened);
-    	int diff = b.get(Calendar.YEAR) - a.get(Calendar.YEAR);
-    	if (a.get(Calendar.MONTH) > b.get(Calendar.MONTH) ||
-        	(a.get(Calendar.MONTH) == b.get(Calendar.MONTH) && a.get(Calendar.DATE) > b.get(Calendar.DATE))) {
-        	diff--;
-    	}
-   	 
-   	if(diff<0) diff=-diff;
-       
-     //return  2.54 * amount;
-   	 return diff * perc * amount;
-    }
+	private static final double PERCENT_INTEREST = 2.54 / 100;
 
+	void updateBalances(List accounts) {
+		for (Object object : accounts) {// TODO change Object to BankAccount
+			double interest = calculateInterest((BankAccount) object);
+			BankAccount acc = (BankAccount) object;
+			acc.setMoney(acc.getMoney() + interest);
+		}
+	}
 
+	double calculateInterest(BankAccount account) {
+		Calendar currentTime = getNewCalender();
+		currentTime.setTime(currentDate());
+		Calendar timeOpened = getNewCalender();
+		timeOpened.setTime(account.getDateOpened());
+		int yearOpened = timeOpened.get(Calendar.YEAR);
+		int currentYear = currentTime.get(Calendar.YEAR);
+		int accountAge = yearOpened - currentYear;// TODO Switch yearOpened and
+													// currentYear
+		if (currentDateIsEarlierThanDateOpened(currentTime, timeOpened)) {
+			accountAge--;
+		}
+		if (accountAge < 0) {
+			accountAge = -accountAge;// TODO Replace with accountAge = 0;
+		}
+		return totalInterest(account.getBalance(), accountAge);
+	}
+
+	private Date currentDate() {
+		return new Date();
+	}
+
+	private Calendar getNewCalender() {
+		return Calendar.getInstance(Locale.US);
+	}
+
+	private double totalInterest(double accountBalance, int accountAge) {
+		return accountAge * PERCENT_INTEREST * accountBalance;
+	}
+
+	private boolean currentDateIsEarlierThanDateOpened(Calendar currentTime,
+			Calendar timeOpened) {// TODO switch currentTime and timeOpened
+
+		int currentMonth = currentTime.get(Calendar.MONTH);
+		int monthOpened = timeOpened.get(Calendar.MONTH);
+		int currentDay = currentTime.get(Calendar.DATE);
+		int dayOpened = timeOpened.get(Calendar.DATE);
+		return currentMonth > monthOpened
+				|| (currentMonth == monthOpened && currentDay > dayOpened);
+	}
 }
-
-
 
 class BankAccount {
 
-    Date date;
-    double money;
+	private Date date;
+	private double money;
 
-    BankAccount(Date date, double money) {
-   	 this.date = date;
-   	 this.money = money;
-    }
-    
+	BankAccount(Date date, double money) {
+		this.date = date;
+		this.money = money;
+	}
 
-    public double getBalance() {
-   	 // TODO Auto-generated method stub
-   	 return money;
-    }
+	public double getBalance() {
+		return getMoney();
+	}
 
+	double getMoney() {
+		return money;
+	}
+
+	void setMoney(double money) {
+		this.money = money;
+	}
+
+	Date getDateOpened() {
+		return date;
+	}
 }
-
-
